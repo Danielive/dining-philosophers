@@ -10,9 +10,9 @@ import java.util.concurrent.Executors;
  */
 class Manager {
 
-    private static List<Philosopher> philosophers = new ArrayList<>();
-    private static List<Fork> forks = new ArrayList<>();
-    private static ExecutorService ThreadPool;
+    volatile private static List<Philosopher> philosophers = new ArrayList<>();
+    volatile private static List<Fork> forks = new ArrayList<>();
+    volatile private static ExecutorService ThreadPool;
 
     void execute(int count) throws InterruptedException {
 

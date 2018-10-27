@@ -3,7 +3,7 @@
  */
 class Fork {
 
-    private boolean state;
+    volatile private boolean state;
     private int number;
 
     Fork(int number) {
@@ -11,10 +11,10 @@ class Fork {
         this.number = number;
     }
 
-    boolean isState() {
+    synchronized boolean isState() {
         return state;
     }
-    void setState(boolean state) {
+    synchronized void setState(boolean state) {
         this.state = state;
     }
 
