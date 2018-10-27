@@ -14,7 +14,7 @@ public class Philosopher extends Thread {
     private int number;
 
     volatile static private Manager manager = new Manager();
-    volatile private Mutex mutex = new Mutex();
+    private Mutex mutex = new Mutex();
 
     Philosopher(int numPhilosopher) {
         setName("Philosopher-" + (numPhilosopher+1));
