@@ -23,8 +23,6 @@ class Philosopher extends Thread {
     }
 
     public void run() {
-        System.out.println("START" + formatDate.format(new Date()));
-
         try {
             Manager.getPhilosophers().get(number).startDining();
         } catch (InterruptedException e) {
