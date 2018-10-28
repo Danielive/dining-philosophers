@@ -1,5 +1,4 @@
 import org.jetbrains.annotations.Contract;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -12,11 +11,10 @@ class Manager {
 
     volatile private static List<Philosopher> philosophers = new ArrayList<>();
     volatile private static List<Fork> forks = new ArrayList<>();
-    volatile private static ExecutorService ThreadPool;
 
     void execute(int count) throws InterruptedException {
 
-        ThreadPool = Executors.newFixedThreadPool(count);
+        ExecutorService threadPool = Executors.newFixedThreadPool(count);
 
         // set list philosophers
         for (int i = 0; i < count; i++) {
@@ -28,14 +26,15 @@ class Manager {
 
         // starting philosophers
         for (int i = 0; i < count; i++) {
-            ThreadPool.execute(philosophers.get(i));
+            threadPool.execute(philosophers.get(i));
+            Thread.sleep(10);
         }
 
         Thread.sleep(1000);
 
-        ThreadPool.shutdown();
+        threadPool.shutdown();
         // noinspection StatementWithEmptyBody
-        while(!ThreadPool.isTerminated()){
+        while(!threadPool.isTerminated()){
             // wait for all tasks to finish
         }
 
@@ -43,12 +42,12 @@ class Manager {
     }
 
     @Contract(pure = true)
-    List<Philosopher> getPhilosophers() {
+    static List<Philosopher> getPhilosophers() {
         return philosophers;
     }
 
     @Contract(pure = true)
-    List<Fork> getForks() {
+    static List<Fork> getForks() {
         return forks;
     }
 }
