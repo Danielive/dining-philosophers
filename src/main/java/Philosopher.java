@@ -8,7 +8,7 @@ import java.util.Date;
  * @author Daniel Chuev
  */
 class Philosopher extends Thread {
-    private static SimpleDateFormat formatDate = new SimpleDateFormat("HH:mm:ss:S");
+    private static SimpleDateFormat formatDate = new SimpleDateFormat("HH:mm:ss");
     volatile private boolean stateFork;
     volatile private boolean dined;
     private int number;
