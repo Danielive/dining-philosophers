@@ -14,7 +14,7 @@ final class Fork {
     }
 
     @Contract(pure = true)
-    boolean isState() {
+    Boolean isState() {
         return state;
     }
     void setState(boolean state) {
@@ -22,7 +22,7 @@ final class Fork {
     }
 
     @Contract(pure = true)
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 }

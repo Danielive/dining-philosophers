@@ -63,7 +63,7 @@ final class Philosopher extends Thread {
     }
 
     @Contract(pure = true)
-    private boolean isStateFork() {
+    private Boolean isStateFork() {
         return stateFork;
     }
     private void setStateFork(final boolean stateFork) {
