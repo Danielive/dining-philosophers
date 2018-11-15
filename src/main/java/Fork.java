@@ -1,27 +1,28 @@
+import org.jetbrains.annotations.Contract;
+
 /**
  * @author Daniel Chuev
  */
-class Fork {
+final class Fork {
 
-    volatile private boolean state;
-    private int number;
+    private Boolean state;
+    final private Integer number;
 
-    Fork(int number) {
+    Fork(final int number) {
         state = true;
         this.number = number;
     }
 
-    synchronized boolean isState() {
+    @Contract(pure = true)
+    boolean isState() {
         return state;
     }
-    synchronized void setState(boolean state) {
+    void setState(boolean state) {
         this.state = state;
     }
 
+    @Contract(pure = true)
     public int getNumber() {
         return number;
-    }
-    public void setNumber(int number) {
-        this.number = number;
     }
 }

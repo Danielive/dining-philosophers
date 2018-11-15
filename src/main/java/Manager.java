@@ -1,20 +1,18 @@
 import org.jetbrains.annotations.Contract;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * @author Daniel Chuev
  */
-class Manager {
+final class Manager {
 
-    volatile private static List<Philosopher> philosophers = new ArrayList<>();
-    volatile private static List<Fork> forks = new ArrayList<>();
+    private static List<Philosopher> philosophers = new ArrayList<>();
+    private static List<Fork> forks = new ArrayList<>();
 
     void execute(int count) throws InterruptedException {
-
-        ExecutorService threadPool = Executors.newFixedThreadPool(count);
+        System.out.println("Number of philosophers: " + count);
 
         // set list philosophers
         for (int i = 0; i < count; i++) {
@@ -26,19 +24,17 @@ class Manager {
 
         // starting philosophers
         for (int i = 0; i < count; i++) {
-            threadPool.execute(philosophers.get(i));
+            Executors.newFixedThreadPool(count).execute(philosophers.get(i));
             Thread.sleep(10);
         }
 
         Thread.sleep(1000);
 
-        threadPool.shutdown();
+        Executors.newFixedThreadPool(count).shutdown();
         // noinspection StatementWithEmptyBody
-        while(!threadPool.isTerminated()){
+        while(!Executors.newFixedThreadPool(count).isTerminated()){
             // wait for all tasks to finish
         }
-
-        System.out.println("All the philosophers of dined");
     }
 
     @Contract(pure = true)
