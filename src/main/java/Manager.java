@@ -11,7 +11,7 @@ final class Manager {
     private static List<Philosopher> philosophers = new ArrayList<>();
     private static List<Fork> forks = new ArrayList<>();
 
-    void execute(int count) throws InterruptedException {
+    void execute(int count) {
         System.out.println("Number of philosophers: " + count);
 
         // set list philosophers
@@ -20,21 +20,16 @@ final class Manager {
             forks.add(new Fork(i));
         }
 
-        Thread.sleep(1000);
-
-        // starting philosophers
-        for (int i = 0; i < count; i++) {
-            Executors.newFixedThreadPool(count).execute(philosophers.get(i));
-            Thread.sleep(10);
+        while (true) {
+            getPhilosophers().stream().filter(this::choicePhilosopher).forEach(Philosopher::startDining);
         }
+    }
 
-        Thread.sleep(1000);
-
-        Executors.newFixedThreadPool(count).shutdown();
-        // noinspection StatementWithEmptyBody
-        while(!Executors.newFixedThreadPool(count).isTerminated()){
-            // wait for all tasks to finish
-        }
+    @Contract(pure = true)
+    private Boolean choicePhilosopher(Philosopher philosopher) {
+        if ((philosopher.getNumber()+1) < Manager.getForks().size())
+            return philosopher.isState(philosopher.getNumber(), (philosopher.getNumber() + 1));
+        else return philosopher.isState(philosopher.getNumber(), 0);
     }
 
     @Contract(pure = true)

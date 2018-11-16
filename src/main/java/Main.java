@@ -1,12 +1,17 @@
 import java.util.Scanner;
+import java.util.function.Supplier;
 
 /**
  * @author Daniel Chuev
  */
 public class Main {
 
-    public static void main(String args[]) throws InterruptedException {
+    private static Supplier<Integer> scanText = () -> {
         System.out.print("Enter number of philosophers: ");
-        new Manager().execute(Integer.parseInt(new Scanner(System.in).nextLine()));
+        return Integer.parseInt(new Scanner(System.in).nextLine());
+    };
+
+    public static void main(String args[]) throws InterruptedException {
+        new Manager().execute(scanText.get());
     }
 }

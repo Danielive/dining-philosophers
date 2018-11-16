@@ -13,16 +13,15 @@ final class Fork {
         this.number = number;
     }
 
+    Integer getNumber() {
+        return number;
+    }
+
     @Contract(pure = true)
     Boolean isState() {
         return state;
     }
     void setState(boolean state) {
         this.state = state;
-    }
-
-    @Contract(pure = true)
-    public Integer getNumber() {
-        return number;
     }
 }
