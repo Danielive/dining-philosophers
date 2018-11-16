@@ -13,6 +13,7 @@ final class Fork {
         this.number = number;
     }
 
+    @Contract(pure = true)
     Integer getNumber() {
         return number;
     }

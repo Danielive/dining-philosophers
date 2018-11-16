@@ -1,7 +1,6 @@
 import org.jetbrains.annotations.Contract;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 /**
  * @author Daniel Chuev
@@ -20,14 +19,15 @@ final class Manager {
             forks.add(new Fork(i));
         }
 
+
         while (true) {
-            getPhilosophers().stream().filter(this::choicePhilosopher).forEach(Philosopher::startDining);
+            getPhilosophers().stream().parallel().filter(this::choicePhilosopher).findAny().ifPresent(Philosopher::startDining);
         }
     }
 
     @Contract(pure = true)
     private Boolean choicePhilosopher(Philosopher philosopher) {
-        if ((philosopher.getNumber()+1) < Manager.getForks().size())
+        if ((philosopher.getNumber()+1) < Manager.getPhilosophers().size())
             return philosopher.isState(philosopher.getNumber(), (philosopher.getNumber() + 1));
         else return philosopher.isState(philosopher.getNumber(), 0);
     }

@@ -8,15 +8,13 @@ import java.util.Date;
  */
 final class Philosopher {
 
-    final private static SimpleDateFormat formatDate = new SimpleDateFormat("HH:mm:ss:SSS");
+    final private static SimpleDateFormat formatDate = new SimpleDateFormat("mm:ss:SSS");
     final private Integer number;
-    private Boolean stateFork;
     private String name;
 
     Philosopher(final int numPhilosopher) {
         setName("Philosopher-" + (numPhilosopher+1));
         number = numPhilosopher;
-        stateFork = true;
         System.out.println(getName() + " has sit at the table : " + formatDate.format(new Date()));
     }
 
@@ -33,13 +31,12 @@ final class Philosopher {
         System.out.println(Manager.getPhilosophers().get(oneFork).getName() + " takes forks " + (oneFork + 1) + " and " + (twoFork + 1) + " : " + Philosopher.getFormatDate().format(new Date()));
         System.out.println(Manager.getPhilosophers().get(oneFork).getName() + " begin dining : " + Philosopher.getFormatDate().format(new Date()));
 
-        Manager.getPhilosophers().get(oneFork).setStateFork(false);
-        Manager.getPhilosophers().get(twoFork).setStateFork(false);
         Manager.getForks().get(oneFork).setState(false);
         Manager.getForks().get(twoFork).setState(false);
 
+        // dining
         try {
-            Thread.sleep(50);
+            Thread.sleep(1000);
         }
         catch (InterruptedException ex) {
             ex.printStackTrace();
@@ -47,17 +44,12 @@ final class Philosopher {
 
         System.out.println(Manager.getPhilosophers().get(oneFork).getName() + " end dining : " + Philosopher.getFormatDate().format(new Date()));
 
-        Manager.getPhilosophers().get(oneFork).setStateFork(true);
-        Manager.getPhilosophers().get(twoFork).setStateFork(true);
         Manager.getForks().get(oneFork).setState(true);
         Manager.getForks().get(twoFork).setState(true);
     }
 
     private StatePhilosopher state = (oneFork, twoFork) ->
-            Manager.getForks().get(oneFork).isState() &&
-                    Manager.getForks().get(twoFork).isState() &&
-                    Manager.getPhilosophers().get(oneFork).isStateFork() &&
-                    Manager.getPhilosophers().get(twoFork).isStateFork();
+            Manager.getForks().get(oneFork).isState() && Manager.getForks().get(twoFork).isState();
 
     @Contract(pure = true)
     Integer getNumber() {
@@ -74,14 +66,6 @@ final class Philosopher {
 
     @Contract(pure = true)
     Boolean isState(Integer oneFork, Integer twoFork) {return state.isReady(oneFork, twoFork);}
-
-    @Contract(pure = true)
-    private Boolean isStateFork() {
-        return stateFork;
-    }
-    private void setStateFork(final boolean stateFork) {
-        this.stateFork = stateFork;
-    }
 
     @Contract(pure = true)
     private static SimpleDateFormat getFormatDate() {
