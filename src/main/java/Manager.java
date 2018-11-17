@@ -1,9 +1,7 @@
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,8 +11,9 @@ final class Manager {
 
     private static List<Philosopher> philosophers = Collections.synchronizedList(new ArrayList<>());
     private static List<Fork> forks = Collections.synchronizedList(new ArrayList<>());
+    private static boolean stateDined;
 
-    void execute(int count) {
+    void execute(final int count) {
         System.out.println("Number of philosophers: " + count);
 
         // set list philosophers
@@ -24,16 +23,9 @@ final class Manager {
         }
 
         while (true) {
-            boolean stateDined = false;
-
-            for (Philosopher phil : Manager.getPhilosophers()) {
-                phil.setDined(false);
-                phil.setState(false);
-                phil.setTake(false);
-            }
-            for (Fork fork : Manager.getForks()) {
-                fork.setState(true);
-            }
+            setStateDined(false);
+            getPhilosophers().forEach(Philosopher::clear);
+            getForks().forEach(Fork::clear);
 
             while (!stateDined) {
                 getPhilosophers()
@@ -42,26 +34,23 @@ final class Manager {
                         .parallel()
                         .forEach(Philosopher::dining);
 
-                int i = 0;
+                getPhilosophers().forEach(this::choiceRestorePhilosopher);
 
-                for (Philosopher phil : Manager.getPhilosophers()) {
-                    if (!phil.getDined() && phil.getState()) {
-                        if (phil.getNumber()+1 < Manager.getPhilosophers().size())
-                            restore(phil.getNumber(), phil.getNumber()+1);
-                        else
-                            restore(phil.getNumber(), 0);
-                    }
-                }
-
-                for (Philosopher phil : Manager.getPhilosophers()) {
-                    if (phil.getDined()) {
-                        i++;
-                    }
-                }
-
-                if (i == count) stateDined = true;
+                checkDined(count);
             }
         }
+    }
+
+    private void checkDined(int count) {
+        int i = 0;
+
+        for (Philosopher phil : Manager.getPhilosophers()) {
+            if (phil.getDined()) {
+                i++;
+            }
+        }
+
+        if (i == count) setStateDined(true);
     }
 
     private StatePhilosopher state = (one, two) -> {
@@ -80,8 +69,7 @@ final class Manager {
         }
     };
 
-    @NotNull
-    private Boolean restore(Integer one, Integer two) {
+    private StatePhilosopher restore = (one, two) -> {
         if (!(Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
                 (Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
                 !Manager.getPhilosophers().get(one).getDined() && Manager.getPhilosophers().get(one).getTake()) {
@@ -94,16 +82,31 @@ final class Manager {
             return true;
         }
         return false;
+    };
+
+    private static void setStateDined(boolean stateDined) {
+        Manager.stateDined = stateDined;
     }
 
     @Contract(pure = true)
     private Boolean isState(Integer oneFork, Integer twoFork) {return state.isReady(oneFork, twoFork);}
+
+    private void doRestore(Integer oneFork, Integer twoFork) {restore.isReady(oneFork, twoFork);}
 
     @Contract(pure = true)
     private Boolean choicePhilosopher(Philosopher philosopher) {
         if ((philosopher.getNumber()+1) < Manager.getPhilosophers().size())
             return isState(philosopher.getNumber(), (philosopher.getNumber() + 1));
         else return isState(philosopher.getNumber(), 0);
+    }
+
+    private void choiceRestorePhilosopher(Philosopher philosopher) {
+        if (!philosopher.getDined() && philosopher.getState()) {
+            if (philosopher.getNumber()+1 < Manager.getPhilosophers().size())
+                doRestore(philosopher.getNumber(), philosopher.getNumber()+1);
+            else
+                doRestore(philosopher.getNumber(), 0);
+        }
     }
 
     @Contract(pure = true)

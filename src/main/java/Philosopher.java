@@ -8,7 +8,7 @@ import java.util.Date;
  */
 final class Philosopher {
 
-    final private static SimpleDateFormat formatDate = new SimpleDateFormat("mm:ss:SSS");
+    final private static SimpleDateFormat formatDate = new SimpleDateFormat("ss:SSS");
     final private Integer number;
     private String name;
     private Boolean state;
@@ -42,6 +42,12 @@ final class Philosopher {
 
             System.out.println(getName() + " end dining : " + Philosopher.getFormatDate().format(new Date()));
         }
+    }
+
+    void clear() {
+        setState(false);
+        setDined(false);
+        setTake(false);
     }
 
     @Contract(pure = true)
@@ -82,7 +88,7 @@ final class Philosopher {
     }
 
     @Contract(pure = true)
-    static SimpleDateFormat getFormatDate() {
+    private static SimpleDateFormat getFormatDate() {
         return formatDate;
     }
 }

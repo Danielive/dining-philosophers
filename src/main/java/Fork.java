@@ -13,6 +13,10 @@ final class Fork {
         this.number = number;
     }
 
+    void clear(){
+        setState(true);
+    }
+
     @Contract(pure = true)
     Integer getNumber() {
         return number;
