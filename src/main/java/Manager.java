@@ -40,7 +40,7 @@ final class Manager {
         }
     }
 
-    private void checkDined(int count) {
+    private void checkDined(final int count) {
         int i = 0;
 
         for (Philosopher phil : Manager.getPhilosophers()) {
