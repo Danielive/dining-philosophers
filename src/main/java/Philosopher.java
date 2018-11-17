@@ -19,9 +19,9 @@ final class Philosopher {
         setName("Philosopher-" + (numPhilosopher+1));
         number = numPhilosopher;
         state = false;
-        System.out.println(getName() + " has sit at the table : " + formatDate.format(new Date()));
         dined = false;
         take = false;
+        System.out.println(getName() + " has sit at the table : " + formatDate.format(new Date()));
     }
 
     void dining() {
