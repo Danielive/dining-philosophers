@@ -13,6 +13,7 @@ final class Philosopher {
     private String name;
     private Boolean state;
     private Boolean dined;
+    private Boolean take;
 
     Philosopher(final int numPhilosopher) {
         setName("Philosopher-" + (numPhilosopher+1));
@@ -20,6 +21,7 @@ final class Philosopher {
         state = false;
         System.out.println(getName() + " has sit at the table : " + formatDate.format(new Date()));
         dined = false;
+        take = false;
     }
 
 //    void startDining() {
@@ -33,7 +35,7 @@ final class Philosopher {
 
 
     void dining() {
-        if (!getDined() && getState()) {
+        if (!getDined() && getState() && getTake()) {
             //Manager.getPhilosophers().get(number).setState(true);
 
             if ((number + 1) < Manager.getForks().size())
@@ -61,7 +63,7 @@ final class Philosopher {
             //Manager.getPhilosophers().get(number).setState(false);
             //Manager.getPhilosophers().get(number+1).setState(false);
 
-            setDined(true);
+            //setDined(true);
         }
     }
 //
@@ -74,6 +76,13 @@ final class Philosopher {
 //        return false;
 //    };
 
+    @Contract(pure = true)
+    public Boolean getTake() {
+        return take;
+    }
+    public void setTake(Boolean take) {
+        this.take = take;
+    }
 
     @Contract(pure = true)
     Boolean getDined() {
@@ -108,7 +117,7 @@ final class Philosopher {
 //    Boolean isState(Integer oneFork, Integer twoFork) {return state.isReady(oneFork, twoFork);}
 
     @Contract(pure = true)
-    private static SimpleDateFormat getFormatDate() {
+    static SimpleDateFormat getFormatDate() {
         return formatDate;
     }
 }
