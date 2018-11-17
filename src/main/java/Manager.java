@@ -1,7 +1,6 @@
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
