@@ -9,8 +9,8 @@ import java.util.List;
  */
 final class Manager {
 
-    private static List<Philosopher> philosophers = Collections.synchronizedList(new ArrayList<>());
-    private static List<Fork> forks = Collections.synchronizedList(new ArrayList<>());
+    private static List<Philosopher> philosophers = new ArrayList<>();
+    private static List<Fork> forks = new ArrayList<>();
     private static boolean stateDined;
 
     void execute(final int count) {
