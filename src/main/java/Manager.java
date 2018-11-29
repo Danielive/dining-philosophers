@@ -53,17 +53,19 @@ final class Manager {
     }
 
     private StatePhilosopher state = (one, two) -> {
-        if ((Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
-                !(Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
-                !Manager.getPhilosophers().get(one).getDined() && !Manager.getPhilosophers().get(one).getTake()) {
-            Manager.getForks().get(one).setState(false);
-            Manager.getForks().get(two).setState(false);
-            Manager.getPhilosophers().get(one).setState(true);
-            Manager.getPhilosophers().get(two).setState(true);
-            Manager.getPhilosophers().get(one).setTake(true);
-            return true;
+        synchronized (this) {
+            if ((Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
+                    !(Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
+                    !Manager.getPhilosophers().get(one).getDined() && !Manager.getPhilosophers().get(one).getTake()) {
+                Manager.getForks().get(one).setState(false);
+                Manager.getForks().get(two).setState(false);
+                Manager.getPhilosophers().get(one).setState(true);
+                Manager.getPhilosophers().get(two).setState(true);
+                Manager.getPhilosophers().get(one).setTake(true);
+                return true;
+            }
+            return false;
         }
-        return false;
     };
 
     private StatePhilosopher restore = (one, two) -> {
