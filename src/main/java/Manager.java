@@ -1,4 +1,5 @@
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -31,21 +32,17 @@ final class Manager {
             getPhilosophers().forEach(Philosopher::clear);
             getForks().forEach(Fork::clear);
             setEdges(count);
+
             Collections.sort(edges);
 
             while (!stateDined) {
-//                edges.stream()
-//                        .filter(Philosopher -> Philosopher::choicePhilosopher)
-//                        .parallel()
-//                        .forEach(Philosopher::dining);
-//
-                getPhilosophers()
-                        .stream()
+                edges.stream()
                         .filter(this::choicePhilosopher)
                         .parallel()
-                        .forEach(Philosopher::dining);
+                        .forEach(this::diningPhilosopher);
 
-                getPhilosophers().forEach(this::choiceRestorePhilosopher);
+
+                edges.forEach(this::choiceRestorePhilosopher);
 
                 checkDined(count);
             }
@@ -64,84 +61,75 @@ final class Manager {
         if (i == count) setStateDined(true);
     }
 
-    private StatePhilosopher state = (one, two) -> {
-        synchronized (this) {
-            if ((Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
-                    !(Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
-                    !Manager.getPhilosophers().get(one).getDined() && !Manager.getPhilosophers().get(one).getTake()) {
-
-                System.out.printf("* Philosopher-%s | edge: Node %s, Node %s%n", one+1, one+1, two+1);
-
-                Manager.getForks().get(one).setState(false);
-                Manager.getForks().get(two).setState(false);
-                Manager.getPhilosophers().get(one).setState(true);
-                Manager.getPhilosophers().get(two).setState(true);
-                Manager.getPhilosophers().get(one).setTake(true);
-                return true;
-            }
-            return false;
+    private void choiceRestorePhilosopher(Edge edge) {
+        if (!(Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState()) &&
+                (Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState()) &&
+                !Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getDined() && Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getTake()
+                && edge.isStateEdge()) {
+            Manager.getForks().get(edge.getPhilosopherOne().getNumber()).setState(true);
+            Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).setState(true);
+            Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).setState(false);
+            Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).setState(false);
+            Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).setTake(false);
+            Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).setDined(true);
         }
-    };
-
-    private StatePhilosopher restore = (one, two) -> {
-        if (!(Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
-                (Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
-                !Manager.getPhilosophers().get(one).getDined() && Manager.getPhilosophers().get(one).getTake()) {
-            Manager.getForks().get(one).setState(true);
-            Manager.getForks().get(two).setState(true);
-            Manager.getPhilosophers().get(one).setState(false);
-            Manager.getPhilosophers().get(two).setState(false);
-            Manager.getPhilosophers().get(two).setTake(false);
-            Manager.getPhilosophers().get(one).setDined(true);
-            return true;
+        else if (!(Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState()) &&
+                (Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState()) &&
+                !Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getDined() && Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getTake()
+                && edge.isStateEdge()) {
+            Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).setState(true);
+            Manager.getForks().get(edge.getPhilosopherOne().getNumber()).setState(true);
+            Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).setState(false);
+            Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).setState(false);
+            Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).setTake(false);
+            Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).setDined(true);
         }
-        return false;
-    };
+    }
 
     private static void setStateDined(boolean stateDined) {
         Manager.stateDined = stateDined;
     }
 
-    @Contract(pure = true)
-    private Boolean isState(Integer oneFork, Integer twoFork) {return state.isReady(oneFork, twoFork);}
-
-    private void doRestore(Integer oneFork, Integer twoFork) {restore.isReady(oneFork, twoFork);}
-
-
-    @Contract(pure = true)
-    private Boolean choicePhilosopher(Philosopher philosopher) {
-
-        synchronized (this) {
-            for (Edge edge : edges) {
-                if ((Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState()) &&
-                        !(Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState()) &&
-                        !Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getDined() && !Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getTake()
-                        && !edge.isStateEdge()) {
-
-                    edge.setStateEdge(true);
-                    System.out.printf("One 1: %s 2: %s%n", edge.getPhilosopherOne().getNumber() + 1, edge.getPhilosopherTwo().getNumber() + 1);
-                    return isState(edge.getPhilosopherOne().getNumber(), edge.getPhilosopherTwo().getNumber());
-                } else if ((Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState()) &&
-                        !(Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState()) &&
-                        !Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getDined() && !Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getTake()
-                        && !edge.isStateEdge()) {
-
-                    edge.setStateEdge(true);
-                    System.out.printf("Two 1: %s 2: %s%n", edge.getPhilosopherTwo().getNumber() + 1, edge.getPhilosopherOne().getNumber() + 1);
-                    return isState(edge.getPhilosopherTwo().getNumber(), edge.getPhilosopherOne().getNumber());
-                }
-            }
-            return false;
-        }
+    private void diningPhilosopher(Edge edge) {
+        getPhilosophers().get(edge.getNumPhilosopher()).dining();
     }
 
-    private void choiceRestorePhilosopher(Philosopher philosopher) {
-        if (!philosopher.getDined() && philosopher.getState()) {
-            if (philosopher.getNumber()+1 < Manager.getPhilosophers().size())
-                doRestore(philosopher.getNumber(), philosopher.getNumber()+1);
-            else
-                doRestore(philosopher.getNumber(), 0);
+    @NotNull
+    private Boolean choicePhilosopher(Edge edge) {
+        synchronized (this) {
+            System.out.println("NOW EDGE: " + (edge.getPhilosopherOne().getNumber()+1));
+
+            if ((Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState()) &&
+                    !(Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState()) &&
+                    !Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getDined() && !Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getTake()
+                    && !edge.isStateEdge()) {
+
+                edge.setStateEdge(true);
+                Manager.getForks().get(edge.getPhilosopherOne().getNumber()).setState(false);
+                Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).setState(false);
+                Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).setState(true);
+                Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).setState(true);
+                Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).setTake(true);
+                edge.setNumPhilosopher(edge.getPhilosopherOne().getNumber());
+                System.out.printf("edge: Node %s, Node %s%n", edge.getPhilosopherOne().getNumber() + 1, edge.getPhilosopherTwo().getNumber() + 1);
+                return true;
+            } else if ((Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState()) &&
+                    !(Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState()) &&
+                    !Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getDined() && !Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getTake()
+                    && !edge.isStateEdge()) {
+
+                edge.setStateEdge(true);
+                Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).setState(false);
+                Manager.getForks().get(edge.getPhilosopherOne().getNumber()).setState(false);
+                Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).setState(true);
+                Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).setState(true);
+                Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).setTake(true);
+                edge.setNumPhilosopher(edge.getPhilosopherTwo().getNumber());
+                System.out.printf("edge: Node %s, Node %s%n", edge.getPhilosopherTwo().getNumber() + 1, edge.getPhilosopherOne().getNumber() + 1);
+                return true;
+            }
         }
+        return false;
     }
 
     @Contract(pure = true)

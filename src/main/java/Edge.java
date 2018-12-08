@@ -8,6 +8,7 @@ public class Edge implements Comparable<Edge> {
     private Philosopher philosopherOne;
     private Philosopher philosopherTwo;
     private Integer weight;
+    private Integer numPhilosopher;
     private boolean one = false;
     private boolean two = false;
     private boolean stateEdge = false;
@@ -19,10 +20,10 @@ public class Edge implements Comparable<Edge> {
         System.out.printf("edge: Node %s, Node %s | Weight: %s %n", philosopherOne.getNumber()+1, philosopherTwo.getNumber()+1, weight);
     }
 
-    public Philosopher getPhilosopherOne() {
+    Philosopher getPhilosopherOne() {
         return philosopherOne;
     }
-    public Philosopher getPhilosopherTwo() {
+    Philosopher getPhilosopherTwo() {
         return philosopherTwo;
     }
 
@@ -57,10 +58,17 @@ public class Edge implements Comparable<Edge> {
         this.two = two;
     }
 
-    public boolean isStateEdge() {
+    boolean isStateEdge() {
         return stateEdge;
     }
-    public void setStateEdge(boolean stateEdge) {
+    void setStateEdge(boolean stateEdge) {
         this.stateEdge = stateEdge;
+    }
+
+    Integer getNumPhilosopher() {
+        return numPhilosopher;
+    }
+    void setNumPhilosopher(Integer numPhilosopher) {
+        this.numPhilosopher = numPhilosopher;
     }
 }
