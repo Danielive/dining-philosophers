@@ -14,7 +14,6 @@ final class Manager {
     private final static int max = 10;
     private final static int min = 1;
     private static List<Edge> edges = new ArrayList<>();
-    private static Iterator <Edge> iterator = edges.iterator();
 
     void execute(final int count) {
         System.out.println("Number of philosophers: " + count);
@@ -39,8 +38,7 @@ final class Manager {
                 edges.stream()
                         .filter(this::choicePhilosopher)
                         .parallel()
-                        .forEach(this::diningPhilosopher);
-
+                        .forEachOrdered(this::diningPhilosopher);
 
                 edges.forEach(this::choiceRestorePhilosopher);
 
@@ -97,7 +95,14 @@ final class Manager {
     @NotNull
     private Boolean choicePhilosopher(Edge edge) {
         synchronized (this) {
-            System.out.println("NOW EDGE: " + (edge.getPhilosopherOne().getNumber()+1));
+
+            for (Edge edge1 : edges) {
+                System.out.printf("NOW EDGE: %s - %s | %s%n",
+                        (edge1.getPhilosopherOne().getNumber() + 1),
+                        (edge1.getPhilosopherTwo().getNumber() + 1),
+                        (edge1.getWeight())
+                );
+            }
 
             if ((Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState()) &&
                     !(Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState()) &&
