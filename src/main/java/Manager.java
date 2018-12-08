@@ -1,9 +1,6 @@
-import com.google.common.graph.MutableValueGraph;
-import com.google.common.graph.ValueGraphBuilder;
 import org.jetbrains.annotations.Contract;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+
+import java.util.*;
 
 /**
  * @author Daniel Chuev
@@ -15,7 +12,8 @@ final class Manager {
     private static boolean stateDined;
     private final static int max = 10;
     private final static int min = 1;
-    private static MutableValueGraph<Philosopher, Integer> weightedGraph = ValueGraphBuilder.undirected().build();
+    private static List<Edge> edges = new ArrayList<>();
+    private static Iterator <Edge> iterator = edges.iterator();
 
     void execute(final int count) {
         System.out.println("Number of philosophers: " + count);
@@ -24,36 +22,23 @@ final class Manager {
         for (int i = 0; i < count; i++) {
             philosophers.add(new Philosopher(i));
             forks.add(new Fork(i));
-            weightedGraph.addNode(philosophers.get(i));
         }
-
-        // set edges
-        for (int i = 0; i < count; i++) {
-            if ((i+1) < count)
-                weightedGraph.putEdgeValue(philosophers.get(i), philosophers.get(i + 1), new Random().nextInt(max - min + 1) + min);
-            else
-                weightedGraph.putEdgeValue(philosophers.get(i), philosophers.get(0), new Random().nextInt(max - min + 1) + min);
-        }
-
-        // additionally
-        for (int i = 0; i < count; i++) {
-            if ((i+3) < count)
-                weightedGraph.putEdgeValue(philosophers.get(i+1), philosophers.get(i+3), new Random().nextInt(max - min + 1) + min);
-            if ((i+4) < count)
-                weightedGraph.putEdgeValue(philosophers.get(i+2), philosophers.get(i+4), new Random().nextInt(max - min + 1) + min);
-            if ((i+5) < count)
-                weightedGraph.putEdgeValue(philosophers.get(i+3), philosophers.get(i+5), new Random().nextInt(max - min + 1) + min);
-        }
-
-        System.out.println(weightedGraph.toString());
 
         // execute
         while (true) {
+            edges.clear();
             setStateDined(false);
             getPhilosophers().forEach(Philosopher::clear);
             getForks().forEach(Fork::clear);
+            setEdges(count);
+            Collections.sort(edges);
 
             while (!stateDined) {
+//                edges.stream()
+//                        .filter(Philosopher -> Philosopher::choicePhilosopher)
+//                        .parallel()
+//                        .forEach(Philosopher::dining);
+//
                 getPhilosophers()
                         .stream()
                         .filter(this::choicePhilosopher)
@@ -81,17 +66,12 @@ final class Manager {
 
     private StatePhilosopher state = (one, two) -> {
         synchronized (this) {
-            // TODO: 03.12.2018 Определяем первого по меньшему весу
-            // TODO: 03.12.2018 Запускаем первого и затем смотрим вес от него идущего, у кого меньше тот следующий
-            // todo другой поток видит свободный узел и он не занят и исполняет его
-            // todo и так пока все не насытятся
-
-            // Смотрит вес между вершинами
-            //optionalToString(weightedGraph.edgeValue(philosophers.get(one), philosophers.get(two)).toString())
-
             if ((Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
                     !(Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
                     !Manager.getPhilosophers().get(one).getDined() && !Manager.getPhilosophers().get(one).getTake()) {
+
+                System.out.printf("* Philosopher-%s | edge: Node %s, Node %s%n", one+1, one+1, two+1);
+
                 Manager.getForks().get(one).setState(false);
                 Manager.getForks().get(two).setState(false);
                 Manager.getPhilosophers().get(one).setState(true);
@@ -127,11 +107,32 @@ final class Manager {
 
     private void doRestore(Integer oneFork, Integer twoFork) {restore.isReady(oneFork, twoFork);}
 
+
     @Contract(pure = true)
     private Boolean choicePhilosopher(Philosopher philosopher) {
-        if ((philosopher.getNumber()+1) < Manager.getPhilosophers().size())
-            return isState(philosopher.getNumber(), (philosopher.getNumber() + 1));
-        else return isState(philosopher.getNumber(), 0);
+
+        synchronized (this) {
+            for (Edge edge : edges) {
+                if ((Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState()) &&
+                        !(Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState()) &&
+                        !Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getDined() && !Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getTake()
+                        && !edge.isStateEdge()) {
+
+                    edge.setStateEdge(true);
+                    System.out.printf("One 1: %s 2: %s%n", edge.getPhilosopherOne().getNumber() + 1, edge.getPhilosopherTwo().getNumber() + 1);
+                    return isState(edge.getPhilosopherOne().getNumber(), edge.getPhilosopherTwo().getNumber());
+                } else if ((Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState()) &&
+                        !(Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState()) &&
+                        !Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getDined() && !Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getTake()
+                        && !edge.isStateEdge()) {
+
+                    edge.setStateEdge(true);
+                    System.out.printf("Two 1: %s 2: %s%n", edge.getPhilosopherTwo().getNumber() + 1, edge.getPhilosopherOne().getNumber() + 1);
+                    return isState(edge.getPhilosopherTwo().getNumber(), edge.getPhilosopherOne().getNumber());
+                }
+            }
+            return false;
+        }
     }
 
     private void choiceRestorePhilosopher(Philosopher philosopher) {
@@ -153,9 +154,21 @@ final class Manager {
         return forks;
     }
 
-    private String optionalToString(String str) {
-        str = str.substring(9);
-        str = str.replaceFirst("]", "");
-        return str;
+    private void setEdges(int count) {
+        System.out.println("_________________________________\n");
+
+        // set edges
+        for (int i = 0; i < count; i++)
+            if ((i+1) < count)
+                edges.add(new Edge(philosophers.get(i), philosophers.get(i+1), new Random().nextInt((max - min + 1) + min)));
+
+        // additionally
+        for (int i = 0; i < count-2; i++)
+            if ((i+2) != count-1)
+                edges.add(new Edge(philosophers.get(i), philosophers.get(i+2), new Random().nextInt((max - min + 1) + min)));
+            else
+                edges.add(new Edge(philosophers.get(count-1), philosophers.get(0), new Random().nextInt((max - min + 1) + min)));
+
+        System.out.println("_________________________________\n");
     }
 }
