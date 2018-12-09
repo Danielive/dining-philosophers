@@ -26,11 +26,6 @@ final class Philosopher {
 
     void dining() {
         if (!getDined() && getState() && getTake()) {
-            if ((number + 1) < Manager.getForks().size())
-                System.out.println(getName() + " takes forks " + (number + 1) + " and " + (number + 2) + " : " + Philosopher.getFormatDate().format(new Date()));
-            else
-                System.out.println(getName() + " takes forks " + (number + 1) + " and " + (1) + " : " + Philosopher.getFormatDate().format(new Date()));
-
             System.out.println(getName() + " begin dining : " + Philosopher.getFormatDate().format(new Date()));
 
             // dining
@@ -88,7 +83,7 @@ final class Philosopher {
     }
 
     @Contract(pure = true)
-    private static SimpleDateFormat getFormatDate() {
+    static SimpleDateFormat getFormatDate() {
         return formatDate;
     }
 }

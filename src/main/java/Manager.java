@@ -1,6 +1,7 @@
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -8,6 +9,7 @@ import java.util.*;
  */
 final class Manager {
 
+    final private static SimpleDateFormat formatDate = new SimpleDateFormat("ss:SSS");
     private static List<Philosopher> philosophers = new ArrayList<>();
     private static List<Fork> forks = new ArrayList<>();
     private static boolean stateDined;
@@ -114,7 +116,10 @@ final class Manager {
             Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).setState(true);
             Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).setTake(true);
             edge.setNumPhilosopher(edge.getPhilosopherOne().getNumber());
-            System.out.printf("one edge: Node %s, Node %s%n", edge.getPhilosopherOne().getNumber() + 1, edge.getPhilosopherTwo().getNumber() + 1);
+            System.out.printf("one edge: Node %s, Node %s%n" +
+                    "Philosopher-%s takes forks %s and %s : %s%n", edge.getPhilosopherOne().getNumber() + 1, edge.getPhilosopherTwo().getNumber() + 1,
+                    edge.getPhilosopherOne().getNumber() + 1, edge.getPhilosopherOne().getNumber() + 1, edge.getPhilosopherTwo().getNumber() + 1,
+                    Philosopher.getFormatDate().format(new Date()));
             return true;
         } else if ((Manager.getForks().get(edge.getPhilosopherTwo().getNumber()).isState() && Manager.getForks().get(edge.getPhilosopherOne().getNumber()).isState()) &&
                 !(Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).getState() && Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).getState()) &&
@@ -128,7 +133,10 @@ final class Manager {
             Manager.getPhilosophers().get(edge.getPhilosopherOne().getNumber()).setState(true);
             Manager.getPhilosophers().get(edge.getPhilosopherTwo().getNumber()).setTake(true);
             edge.setNumPhilosopher(edge.getPhilosopherTwo().getNumber());
-            System.out.printf("two edge: Node %s, Node %s%n", edge.getPhilosopherTwo().getNumber() + 1, edge.getPhilosopherOne().getNumber() + 1);
+            System.out.printf("two edge: Node %s, Node %s%n" +
+                            "Philosopher-%s takes forks %s and %s : %s%n", edge.getPhilosopherTwo().getNumber() + 1, edge.getPhilosopherOne().getNumber() + 1,
+                    edge.getPhilosopherTwo().getNumber() + 1, edge.getPhilosopherTwo().getNumber() + 1, edge.getPhilosopherOne().getNumber() + 1,
+                    Philosopher.getFormatDate().format(new Date()));
             return true;
         }
         return false;
