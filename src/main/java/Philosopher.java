@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * @author Daniel Chuev
  */
-final class Philosopher {
+class Philosopher {
 
     final private static SimpleDateFormat formatDate = new SimpleDateFormat("ss:SSS");
     final private Integer number;

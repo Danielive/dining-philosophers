@@ -1,11 +1,10 @@
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Date;
 
 /**
  * @author Daniel Chuev
  */
-public class Edge implements Comparable<Edge> {
+class Edge implements Comparable<Edge> {
 
     private Philosopher philosopherOne;
     private Philosopher philosopherTwo;
@@ -54,10 +53,10 @@ public class Edge implements Comparable<Edge> {
                 Philosopher.getFormatDate().format(new Date()));
     }
 
-    public boolean isUseLeftOrRight() {
+    boolean isUseLeftOrRight() {
         return useLeftOrRight;
     }
-    public void setUseLeftOrRight(boolean useLeftOrRight) {
+    void setUseLeftOrRight(boolean useLeftOrRight) {
         this.useLeftOrRight = useLeftOrRight;
     }
 

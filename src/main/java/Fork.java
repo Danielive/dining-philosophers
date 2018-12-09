@@ -3,7 +3,7 @@ import org.jetbrains.annotations.Contract;
 /**
  * @author Daniel Chuev
  */
-final class Fork {
+class Fork {
 
     private Boolean state;
     final private Integer number;

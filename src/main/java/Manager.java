@@ -1,24 +1,21 @@
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * @author Daniel Chuev
  */
-final class Manager {
+class Manager {
 
-    final private static SimpleDateFormat formatDate = new SimpleDateFormat("ss:SSS");
     private static List<Philosopher> philosophers = new ArrayList<>();
     private static List<Fork> forks = new ArrayList<>();
     private static boolean stateDined;
-    private final static int max = 10;
+    private final static int max = 9;
     private final static int min = 1;
     private static List<Edge> edges = new ArrayList<>();
     private static List<Edge> edgesExecute = new ArrayList<>();
 
-    void execute(final int count) throws InterruptedException {
+    void execute(final int count) {
         System.out.println("Number of philosophers: " + count);
 
         // set nodes
@@ -34,6 +31,7 @@ final class Manager {
             getPhilosophers().forEach(Philosopher::clear);
             getForks().forEach(Fork::clear);
             setEdges(count);
+            printGraphFor5();
             Collections.sort(edges);
 
             while (!stateDined) {
@@ -152,6 +150,21 @@ final class Manager {
             else
                 edges.add(new Edge(philosophers.get(count-1), philosophers.get(0), new Random().nextInt((max - min + 1) + min)));
 
+        System.out.println("_________________________________\n");
+    }
+
+    private void printGraphFor5() {
+        System.out.println(
+                "                     #" + edges.get(0).getWeight() + "     \n" +
+                        "       ---------" + 1 + "---------" + 2 + "\n" +
+                        "       |#" + edges.get(6).getWeight() + "       \\#" + edges.get(4).getWeight() + "     /|\n" +
+                        "       |           \\    / |\n" +
+                        "       " + 5 + "             \\/   |#" + edges.get(1).getWeight() + "\n" +
+                        "       |            /  \\  |\n" +
+                        "       |#" + edges.get(3).getWeight() + "        /#" + edges.get(5).getWeight() + "    \\|\n" +
+                        "       ---------" + 4 + "---------" + 3 + "\n" +
+                        "                     #" + edges.get(2).getWeight() + "     \n"
+        );
         System.out.println("_________________________________\n");
     }
 }
