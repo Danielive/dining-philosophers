@@ -1,5 +1,7 @@
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
+
 /**
  * @author Daniel Chuev
  */
@@ -12,6 +14,7 @@ public class Edge implements Comparable<Edge> {
     private boolean one = false;
     private boolean two = false;
     private boolean stateEdge = false;
+    private boolean useLeftOrRight = false;
 
     Edge (Philosopher philosopherOne, Philosopher philosopherTwo, Integer weight) {
         this.philosopherOne = philosopherOne;
@@ -42,6 +45,20 @@ public class Edge implements Comparable<Edge> {
             return -1;
         else
             return 0;
+    }
+
+    void printEdge(int one, int two) {
+        System.out.printf("edge: Node %s, Node %s%n" +
+                        "Philosopher-%s takes forks %s and %s : %s%n", philosopherOne.getNumber() + 1, philosopherTwo.getNumber() + 1,
+                one + 1, one + 1, two + 1,
+                Philosopher.getFormatDate().format(new Date()));
+    }
+
+    public boolean isUseLeftOrRight() {
+        return useLeftOrRight;
+    }
+    public void setUseLeftOrRight(boolean useLeftOrRight) {
+        this.useLeftOrRight = useLeftOrRight;
     }
 
     public boolean isOne() {

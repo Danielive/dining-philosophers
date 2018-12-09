@@ -1,4 +1,3 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,17 +59,16 @@ final class Manager {
     private Boolean choiceFun(Edge edge, int one, int two) {
         if ((Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
                 !(Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
-                !Manager.getPhilosophers().get(one).getDined() && !Manager.getPhilosophers().get(one).getTake()) {
+                !Manager.getPhilosophers().get(one).getDined() && !Manager.getPhilosophers().get(one).getTake()
+                && !edge.isStateEdge()) {
             Manager.getForks().get(one).setState(false);
             Manager.getForks().get(two).setState(false);
             Manager.getPhilosophers().get(one).setState(true);
             Manager.getPhilosophers().get(two).setState(true);
             Manager.getPhilosophers().get(one).setTake(true);
             edge.setNumPhilosopher(one);
-            System.out.printf("edge: Node %s, Node %s%n" +
-                            "Philosopher-%s takes forks %s and %s : %s%n", one + 1, two + 1,
-                    one + 1, one + 1, two + 1,
-                    Philosopher.getFormatDate().format(new Date()));
+            edge.printEdge(one, two);
+            edge.setStateEdge(true);
             return true;
         }
         return false;
@@ -78,15 +76,18 @@ final class Manager {
 
     @NotNull
     private Boolean choicePhilosopher(Edge edge) {
-        if (choiceFun(edge, edge.getPhilosopherOne().getNumber(), edge.getPhilosopherTwo().getNumber()))
+        if (choiceFun(edge, edge.getPhilosopherOne().getNumber(), edge.getPhilosopherTwo().getNumber())) {
+            edge.setUseLeftOrRight(false);
             return true;
-        else if (choiceFun(edge, edge.getPhilosopherTwo().getNumber(), edge.getPhilosopherOne().getNumber()))
+        }
+        else if (choiceFun(edge, edge.getPhilosopherTwo().getNumber(), edge.getPhilosopherOne().getNumber())) {
+            edge.setUseLeftOrRight(true);
             return true;
+        }
         return false;
     }
 
-    @NotNull
-    private Boolean restoreFun(int one, int two) {
+    private void restoreFun(int one, int two) {
         if (!(Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
                 (Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
                 !Manager.getPhilosophers().get(one).getDined() && Manager.getPhilosophers().get(one).getTake()) {
@@ -96,18 +97,14 @@ final class Manager {
             Manager.getPhilosophers().get(two).setState(false);
             Manager.getPhilosophers().get(two).setTake(false);
             Manager.getPhilosophers().get(one).setDined(true);
-            return true;
         }
-        return false;
     }
 
-    @NotNull
-    private Integer choiceRestorePhilosopher(Edge edge) {
-        if (restoreFun(edge.getPhilosopherOne().getNumber(), edge.getPhilosopherTwo().getNumber()))
-            return 1;
-        else if (restoreFun(edge.getPhilosopherTwo().getNumber(), edge.getPhilosopherOne().getNumber()))
-            return 1;
-        return 0;
+    private void choiceRestorePhilosopher(Edge edge) {
+        if (!edge.isUseLeftOrRight())
+            restoreFun(edge.getPhilosopherOne().getNumber(), edge.getPhilosopherTwo().getNumber());
+        else if (edge.isUseLeftOrRight())
+            restoreFun(edge.getPhilosopherTwo().getNumber(), edge.getPhilosopherOne().getNumber());
     }
 
     private void checkDined(final int count) {
