@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.miracl.milagro.amcl:milagro-crypto-java:0.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.miracl.milagro.amcl/milagro-crypto-java/0.4.0/ebe6bca0c7a1b82dac212c042b4840da6fb51120/milagro-crypto-java-0.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.miracl.milagro.amcl/milagro-crypto-java/0.4.0/9e1fdf7303d9d6e351eb5a222cad9560d873d4d7/milagro-crypto-java-0.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
@@ -53,7 +51,6 @@ class Manager {
         }
     }
 
-    @NotNull
     private Boolean choiceFun(Edge edge, int one, int two) {
         if ((Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
                 !(Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
@@ -72,7 +69,6 @@ class Manager {
         return false;
     }
 
-    @NotNull
     private Boolean choicePhilosopher(Edge edge) {
         if (choiceFun(edge, edge.getPhilosopherOne().getNumber(), edge.getPhilosopherTwo().getNumber())) {
             edge.setUseLeftOrRight(false);
@@ -125,12 +121,10 @@ class Manager {
         getPhilosophers().get(edge.getNumPhilosopher()).dining();
     }
 
-    @Contract(pure = true)
     private static List<Philosopher> getPhilosophers() {
         return philosophers;
     }
 
-    @Contract(pure = true)
     private static List<Fork> getForks() {
         return forks;
     }

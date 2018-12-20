@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Contract;
-
 /**
  * @author Daniel Chuev
  */
@@ -17,12 +15,10 @@ class Fork {
         setState(true);
     }
 
-    @Contract(pure = true)
     Integer getNumber() {
         return number;
     }
 
-    @Contract(pure = true)
     Boolean isState() {
         return state;
     }

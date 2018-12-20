@@ -1,4 +1,3 @@
-import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 
 /**
@@ -37,7 +36,7 @@ class Edge implements Comparable<Edge> {
     }
 
     @Override
-    public int compareTo(@NotNull Edge edge) {
+    public int compareTo(Edge edge) {
         if(this.weight > edge.weight)
             return 1;
         else if(this.weight < edge.weight)

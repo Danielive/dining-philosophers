@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Contract;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -45,7 +43,6 @@ class Philosopher {
         setTake(false);
     }
 
-    @Contract(pure = true)
     Boolean getTake() {
         return take;
     }
@@ -53,7 +50,6 @@ class Philosopher {
         this.take = take;
     }
 
-    @Contract(pure = true)
     Boolean getDined() {
         return dined;
     }
@@ -61,7 +57,6 @@ class Philosopher {
         this.dined = dined;
     }
 
-    @Contract(pure = true)
     Boolean getState() {
         return state;
     }
@@ -69,12 +64,10 @@ class Philosopher {
         this.state = state;
     }
 
-    @Contract(pure = true)
     Integer getNumber() {
         return number;
     }
 
-    @Contract(pure = true)
     private String getName() {
         return name;
     }
@@ -82,7 +75,6 @@ class Philosopher {
         this.name = name;
     }
 
-    @Contract(pure = true)
     static SimpleDateFormat getFormatDate() {
         return formatDate;
     }
