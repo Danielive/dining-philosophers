@@ -41,6 +41,8 @@ final class Manager {
 
                 checkDined(count);
             }
+
+            System.out.println("***************************************");
         }
     }
 

@@ -20,7 +20,7 @@ final class Philosopher {
     private Boolean take;
 
     Philosopher(final int numPhilosopher) {
-        setName("Philosopher-" + (numPhilosopher+1));
+        setName("Philosopher " + (numPhilosopher+1));
         number = numPhilosopher;
         state = false;
         dined = false;
@@ -37,12 +37,29 @@ final class Philosopher {
 
             System.out.println(getName() + " begin dining : " + Philosopher.getFormatDate().format(new Date()));
 
-            // dining
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+            // dining & create block
+            if (BlockChain.blockchain.size() != 0 && (number + 1) < Manager.getForks().size()) {
+                System.out.println("Block |" + getName() + " and " + (number + 2) + "| creation : " + Philosopher.getFormatDate().format(new Date()));
+                BlockChain.addBlock(new Block(getName() + " and " + (number + 2), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
             }
+            else if ((number + 1) < Manager.getForks().size()){
+                System.out.println("Block |" + getName() + " and " + (number + 2) + "| creation  : " + Philosopher.getFormatDate().format(new Date()));
+                BlockChain.addBlock(new Block(getName() + " and " + (number + 2), "0"));
+            }
+            else if (BlockChain.blockchain.size() != 0) {
+                System.out.println("Block |" + getName() + " and " + (1) + "| creation  : " + Philosopher.getFormatDate().format(new Date()));
+                BlockChain.addBlock(new Block(getName() + " and " + (1), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
+            }
+            else {
+                System.out.println("Block |" + getName() + " and " + (1) + "| creation  : " + Philosopher.getFormatDate().format(new Date()));
+                BlockChain.addBlock(new Block(getName() + " and " + (1), "0"));
+            }
+
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException ex) {
+//                ex.printStackTrace();
+//            }
 
             System.out.println(getName() + " end dining : " + Philosopher.getFormatDate().format(new Date()));
         }

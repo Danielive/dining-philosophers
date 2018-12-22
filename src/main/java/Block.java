@@ -43,6 +43,6 @@ class Block {
             nonce ++;
             hash = calculateHash();
         }
-        System.out.println(formatDate.format(new Date()) + " | Block Mined!!! : " + hash);
+        System.out.println("Block |" + data + "| mined : " + formatDate.format(new Date()) + " | hash: " + hash);
     }
 }
