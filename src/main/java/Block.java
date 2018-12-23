@@ -1,6 +1,6 @@
 /*
  * Developed by Daniel Chuev.
- * Last modified 23.12.18 13:41.
+ * Last modified 24.12.18 1:37.
  * Copyright (c) 2018. All Right Reserved.
  */
 
@@ -12,52 +12,48 @@ class Block {
 
     String hash;
     private String previousHash;
-    private String data; //our data will be a simple message.
+    private String data;
     private Integer numbPhil;
-    private String timeStamp; //as number of milliseconds since 1/1/1970.
+    private String timeStamp;
     private int nonce;
-    final private static SimpleDateFormat formatDate = new SimpleDateFormat("ss:SSS");
 
-    //Block Constructor.
     Block(String data, Integer numbPhil, String previousHash) {
         this.data = data;
         this.numbPhil = numbPhil;
         this.previousHash = previousHash;
         this.timeStamp = new SimpleDateFormat("ss:SSS").format(new Date());
-
-        this.hash = calculateHash(); //Making sure we do this after we set the other values.
+        this.hash = calculateHash();
     }
 
-    //Calculate new hash based on blocks contents
+    // calculate new hash based on blocks contents
     private String calculateHash() {
-        String calculatedhash = StringUtil.applySha256(
+        return StringUtil.applySha256(
                 previousHash +
                         timeStamp +
                         Integer.toString(nonce) +
                         data
         );
-        return calculatedhash;
     }
 
-    //Increases nonce value until hash target is reached.
+    // increases nonce value until hash target is reached.
     void mineBlock(int difficulty) {
         String target = StringUtil.getDificultyString(difficulty); //Create a string with difficulty * "0"
         while(!hash.substring(0, difficulty).equals(target)) {
-            nonce ++;
+            nonce++;
             hash = calculateHash();
         }
     }
 
     void print() {
         System.out.println(
-                "________________________________________________________" +
-                "\nBlock |" + data +
+                "__________________________BLOCK_________________________" +
+                "\n|" + data + "|" +
                 "\nprevious hash : " + (!Objects.equals(previousHash, "0") ? previousHash.substring(55) : previousHash) +
                 "\ncurrent hash  : " + hash.substring(55) +
                 "\n________________________________________________________");
     }
 
-    public Integer getNumbPhil() {
+    Integer getNumbPhil() {
         return numbPhil;
     }
 }

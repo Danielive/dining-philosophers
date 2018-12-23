@@ -1,17 +1,16 @@
 /*
  * Developed by Daniel Chuev.
- * Last modified 23.12.18 13:41.
+ * Last modified 24.12.18 1:37.
  * Copyright (c) 2018. All Right Reserved.
  */
 
-import java.util.Date;
 import java.util.Scanner;
 import java.util.function.Supplier;
 
 /**
  * @author Daniel Chuev
  */
-public class Main {
+class Main {
 
     private static Supplier<Integer> scanText = () -> {
         System.out.print("Enter number of philosophers: ");
@@ -20,22 +19,5 @@ public class Main {
 
     public static void main(String args[]) throws InterruptedException {
         new Manager().execute(scanText.get());
-
-        //add our blocks to the blockchain ArrayList:
-//
-//        System.out.println("Trying to Mine block 1... " + Philosopher.getFormatDate().format(new Date()));
-//        BlockChain.addBlock(new Block("Hi im the first block", "0"));
-//
-//        System.out.println("Trying to Mine block 2... " + Philosopher.getFormatDate().format(new Date()));
-//        BlockChain.addBlock(new Block("Yo im the second block", BlockChain.blockchain.get(BlockChain.blockchain.size()-1).hash));
-//
-//        System.out.println("Trying to Mine block 3... " + Philosopher.getFormatDate().format(new Date()));
-//        BlockChain.addBlock(new Block("Hey im the third block", BlockChain.blockchain.get(BlockChain.blockchain.size()-1).hash));
-//
-//        System.out.println("\nBlockchain is Valid: " + BlockChain.isChainValid());
-//
-//        String blockchainJson = StringUtil.getJson(BlockChain.blockchain);
-//        System.out.println("\nThe block chain: ");
-//        System.out.println(blockchainJson);
     }
 }
