@@ -5,6 +5,7 @@
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,17 +46,8 @@ final class Manager {
                 for (Philosopher philosopher : philosophers)
                     if (choicePhilosopher(philosopher))
                         previewList.add(philosopher);
-//
-//                System.out.println("PREVIEW !!!!!!!!!!!!!!!! " + previewList.size());
-//
-//                for (Philosopher philosopher : philosophers) {
-//                    System.out.println("!!!!!!!!!!!!!!!!" +
-//                            "\nNAME " + philosopher.getName() +
-//                            "\nTAKE " + philosopher.getTake() +
-//                            "\nSTATE " + philosopher.getState() +
-//                            "\nDINED " + philosopher.getDined() +
-//                            "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//                }
+
+                Collections.shuffle(previewList);
 
                 miners.stream().parallel().forEach(this::creation);
 
@@ -63,8 +55,7 @@ final class Manager {
 
                 checkDined(count);
             }
-
-            System.out.println("***************************************");
+            System.out.println("**************************FINAL*************************");
         }
     }
 

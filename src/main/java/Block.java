@@ -14,7 +14,7 @@ class Block {
     private String previousHash;
     private String data; //our data will be a simple message.
     private Integer numbPhil;
-    private long timeStamp; //as number of milliseconds since 1/1/1970.
+    private String timeStamp; //as number of milliseconds since 1/1/1970.
     private int nonce;
     final private static SimpleDateFormat formatDate = new SimpleDateFormat("ss:SSS");
 
@@ -23,7 +23,7 @@ class Block {
         this.data = data;
         this.numbPhil = numbPhil;
         this.previousHash = previousHash;
-        this.timeStamp = new Date().getTime();
+        this.timeStamp = new SimpleDateFormat("ss:SSS").format(new Date());
 
         this.hash = calculateHash(); //Making sure we do this after we set the other values.
     }
@@ -32,7 +32,7 @@ class Block {
     private String calculateHash() {
         String calculatedhash = StringUtil.applySha256(
                 previousHash +
-                        Long.toString(timeStamp) +
+                        timeStamp +
                         Integer.toString(nonce) +
                         data
         );
@@ -51,7 +51,7 @@ class Block {
     void print() {
         System.out.println(
                 "________________________________________________________" +
-                "\nBlock |" + data + "| mined : " + formatDate.format(new Date()) +
+                "\nBlock |" + data +
                 "\nprevious hash : " + (!Objects.equals(previousHash, "0") ? previousHash.substring(55) : previousHash) +
                 "\ncurrent hash  : " + hash.substring(55) +
                 "\n________________________________________________________");

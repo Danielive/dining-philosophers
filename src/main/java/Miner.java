@@ -4,9 +4,7 @@
  * Copyright (c) 2018. All Right Reserved.
  */
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
@@ -25,8 +23,6 @@ class Miner {
     }
 
     void creation(Philosopher philosopher) {
-        System.out.println("I " + numbMiner + " miner GET " + philosopher.getName() + " : " + Philosopher.getFormatDate().format(new Date()));
-
         if (Objects.equals(hashBlockChain, BlockChain.getHashBlockChain()))
             addition(philosopher);
         else {
@@ -42,8 +38,10 @@ class Miner {
             BlockChain.addBlock(minerChain.get(minerChain.size() - 1));
             hashBlockChain = BlockChain.getHashBlockChain();
         }
-        else
+        else {
             blockChainToMinerChain();
+            System.out.println("Miner#" + numbMiner + " removed block");
+        }
     }
 
     /**
@@ -55,16 +53,16 @@ class Miner {
      */
     private void addition(Philosopher philosopher) {
         if (minerChain.size() != 0 && (philosopher.getNumber() + 1) < Manager.getForks().size()) {
-            System.out.println("Miner#" + numbMiner + " → Block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2) + "| creation : " + Philosopher.getFormatDate().format(new Date()));
+            System.out.println("Miner#" + numbMiner + " creating block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2) + "| : " + Philosopher.getFormatDate().format(new Date()));
             addBlock(new Block(philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2), philosopher.getNumber(), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
         } else if ((philosopher.getNumber() + 1) < Manager.getForks().size()) {
-            System.out.println("Miner#" + numbMiner + " → Block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2) + "| creation : " + Philosopher.getFormatDate().format(new Date()));
+            System.out.println("Miner#" + numbMiner + " creating block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2) + "| : " + Philosopher.getFormatDate().format(new Date()));
             addBlock(new Block(philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2), philosopher.getNumber(), "0"));
         } else if (minerChain.size() != 0) {
-            System.out.println("Miner#" + numbMiner + " → Block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1) + "| creation : " + Philosopher.getFormatDate().format(new Date()));
+            System.out.println("Miner#" + numbMiner + " creating block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1) + "| : " + Philosopher.getFormatDate().format(new Date()));
             addBlock(new Block(philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1), philosopher.getNumber(), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
         } else {
-            System.out.println("Miner#" + numbMiner + " → Block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1) + "| creation : " + Philosopher.getFormatDate().format(new Date()));
+            System.out.println("Miner#" + numbMiner + " creating block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1) + "| : " + Philosopher.getFormatDate().format(new Date()));
             addBlock(new Block(philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1), philosopher.getNumber(), "0"));
         }
     }
@@ -72,7 +70,7 @@ class Miner {
     private void addBlock(Block newBlock) {
         newBlock.mineBlock(difficulty);
         minerChain.add(newBlock);
-        System.out.println("Miner#" + numbMiner + " created block");
+        System.out.println("Miner#" + numbMiner + " created block ↓ : " + Philosopher.getFormatDate().format(new Date()));
         newBlock.print();
     }
 
@@ -80,7 +78,6 @@ class Miner {
         minerChain.clear();
         minerChain.addAll(BlockChain.blockchain);
         hashBlockChain = BlockChain.getHashBlockChain();
-        System.out.println("Miner#" + numbMiner + " CLEAR MINER");
     }
 
     void clearMinerChain() {

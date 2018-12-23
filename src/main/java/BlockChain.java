@@ -5,8 +5,6 @@
  */
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author Daniel Chuev
@@ -20,9 +18,9 @@ public class BlockChain {
         Manager.getPhilosophers().get(newBlock.getNumbPhil()).setDined(true);
         hashBlockChain = StringUtil.applySha256(blockchain.toString());
 
-        System.out.println("*********CURRENT BLOCKCHAIN*********");
+        System.out.println("*********************CURRENT*BLOCKCHAIN*****************");
         print();
-        System.out.println("------------------------------------");
+        System.out.println("*************************THE*END************************");
     }
 
     synchronized static ArrayList<Block> getBlockchain() {
@@ -40,7 +38,7 @@ public class BlockChain {
     private static void print() {
         for (int i = 0; i < blockchain.size(); i++) {
             blockchain.get(i).print();
-            if (i < blockchain.size()-1) System.out.println("↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓");
+            if (i < blockchain.size()-1) System.out.println("↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓");
         }
     }
 
