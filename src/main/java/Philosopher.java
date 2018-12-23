@@ -1,7 +1,7 @@
 /*
- * Developed by Daniel Chuev on 22.12.18 22:08.
- * Last modified 22.12.18 12:05.
- * Copyright (c) 2018. All right reserved.
+ * Developed by Daniel Chuev.
+ * Last modified 23.12.18 13:41.
+ * Copyright (c) 2018. All Right Reserved.
  */
 
 import java.text.SimpleDateFormat;
@@ -29,45 +29,14 @@ final class Philosopher {
     }
 
     void dining() {
-        if (!getDined() && getState() && getTake()) {
-            if ((number + 1) < Manager.getForks().size())
-                System.out.println(getName() + " takes forks " + (number + 1) + " and " + (number + 2) + " : " + Philosopher.getFormatDate().format(new Date()));
-            else
-                System.out.println(getName() + " takes forks " + (number + 1) + " and " + (1) + " : " + Philosopher.getFormatDate().format(new Date()));
+        if (getState() && getTake()) {
+            // dining & creation block
 
-            System.out.println(getName() + " begin dining : " + Philosopher.getFormatDate().format(new Date()));
-
-            // dining & create block
-            if (BlockChain.blockchain.size() != 0 && (number + 1) < Manager.getForks().size()) {
-                System.out.println("Block |" + getName() + " and " + (number + 2) + "| creation : " + Philosopher.getFormatDate().format(new Date()));
-                BlockChain.addBlock(new Block(getName() + " and " + (number + 2), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
-            }
-            else if ((number + 1) < Manager.getForks().size()){
-                System.out.println("Block |" + getName() + " and " + (number + 2) + "| creation  : " + Philosopher.getFormatDate().format(new Date()));
-                BlockChain.addBlock(new Block(getName() + " and " + (number + 2), "0"));
-            }
-            else if (BlockChain.blockchain.size() != 0) {
-                System.out.println("Block |" + getName() + " and " + (1) + "| creation  : " + Philosopher.getFormatDate().format(new Date()));
-                BlockChain.addBlock(new Block(getName() + " and " + (1), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
-            }
-            else {
-                System.out.println("Block |" + getName() + " and " + (1) + "| creation  : " + Philosopher.getFormatDate().format(new Date()));
-                BlockChain.addBlock(new Block(getName() + " and " + (1), "0"));
-            }
-
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException ex) {
-//                ex.printStackTrace();
-//            }
-
-            System.out.println(getName() + " end dining : " + Philosopher.getFormatDate().format(new Date()));
         }
     }
 
     void clear() {
         setState(false);
-        setDined(false);
         setTake(false);
     }
 
@@ -76,13 +45,6 @@ final class Philosopher {
     }
     void setTake(Boolean take) {
         this.take = take;
-    }
-
-    Boolean getDined() {
-        return dined;
-    }
-    void setDined(Boolean dined) {
-        this.dined = dined;
     }
 
     Boolean getState() {
@@ -96,7 +58,7 @@ final class Philosopher {
         return number;
     }
 
-    private String getName() {
+    String getName() {
         return name;
     }
     private void setName(String name) {
@@ -105,5 +67,12 @@ final class Philosopher {
 
     static SimpleDateFormat getFormatDate() {
         return formatDate;
+    }
+
+    Boolean getDined() {
+        return dined;
+    }
+    public void setDined(Boolean dined) {
+        this.dined = dined;
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Developed by Daniel Chuev on 22.12.18 22:06.
- * Last modified 22.12.18 16:39.
- * Copyright (c) 2018. All right reserved.
+ * Developed by Daniel Chuev.
+ * Last modified 23.12.18 13:41.
+ * Copyright (c) 2018. All Right Reserved.
  */
 
 import java.util.Date;

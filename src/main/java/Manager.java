@@ -1,7 +1,7 @@
 /*
- * Developed by Daniel Chuev on 22.12.18 22:07.
- * Last modified 22.12.18 12:04.
- * Copyright (c) 2018. All right reserved.
+ * Developed by Daniel Chuev.
+ * Last modified 23.12.18 13:41.
+ * Copyright (c) 2018. All Right Reserved.
  */
 
 import java.util.ArrayList;
@@ -13,7 +13,9 @@ import java.util.List;
 final class Manager {
 
     private static List<Philosopher> philosophers = new ArrayList<>();
+    private static List<Philosopher> previewList = new ArrayList<>();
     private static List<Fork> forks = new ArrayList<>();
+    private static List<Miner> miners = new ArrayList<>();
     private static boolean stateDined;
 
     void execute(final int count) {
@@ -25,25 +27,52 @@ final class Manager {
             forks.add(new Fork(i));
         }
 
+        // set list miners
+        for (int i = 0; i < 3; i++) {
+            miners.add(new Miner(i));
+        }
+
         while (true) {
             setStateDined(false);
-            getPhilosophers().forEach(Philosopher::clear);
-            getForks().forEach(Fork::clear);
+            BlockChain.clearBlockChain();
+            philosophers.forEach(Philosopher::clear);
+            forks.forEach(Fork::clear);
 
             while (!stateDined) {
-                getPhilosophers()
+                previewList.clear();
+
+
+                philosophers
                         .stream()
                         .filter(this::choicePhilosopher)
-                        .parallel()
-                        .forEach(Philosopher::dining);
+                        .forEach(this::writePreviewList);
 
-                getPhilosophers().forEach(this::choiceRestorePhilosopher);
+                miners.stream().parallel().forEach(this::creation);
+
+                philosophers.forEach(this::choiceRestorePhilosopher);
 
                 checkDined(count);
             }
 
             System.out.println("***************************************");
         }
+    }
+
+    private void creation(Miner miner) {
+        Philosopher philosopher = null;
+
+        synchronized (this) {
+            if (!Manager.getPreviewList().isEmpty()) {
+                philosopher = Manager.getPreviewList().get(0);
+                Manager.getPreviewList().remove(0);
+            }
+        }
+
+        if (philosopher != null) miner.creation(philosopher);
+    }
+
+    private void writePreviewList(Philosopher philosopher) {
+        previewList.add(philosopher);
     }
 
     private void checkDined(final int count) {
@@ -56,6 +85,10 @@ final class Manager {
         }
 
         if (i == count) setStateDined(true);
+    }
+
+    private static void setStateDined(boolean stateDined) {
+        Manager.stateDined = stateDined;
     }
 
     private StatePhilosopher state = (one, two) -> {
@@ -77,7 +110,7 @@ final class Manager {
     private StatePhilosopher restore = (one, two) -> {
         if (!(Manager.getForks().get(one).isState() && Manager.getForks().get(two).isState()) &&
                 (Manager.getPhilosophers().get(one).getState() && Manager.getPhilosophers().get(two).getState()) &&
-                !Manager.getPhilosophers().get(one).getDined() && Manager.getPhilosophers().get(one).getTake()) {
+                Manager.getPhilosophers().get(one).getTake()) {
             Manager.getForks().get(one).setState(true);
             Manager.getForks().get(two).setState(true);
             Manager.getPhilosophers().get(one).setState(false);
@@ -88,10 +121,6 @@ final class Manager {
         }
         return false;
     };
-
-    private static void setStateDined(boolean stateDined) {
-        Manager.stateDined = stateDined;
-    }
 
     private Boolean isState(Integer oneFork, Integer twoFork) {return state.isReady(oneFork, twoFork);}
 
@@ -112,11 +141,15 @@ final class Manager {
         }
     }
 
-    private static List<Philosopher> getPhilosophers() {
-        return philosophers;
+    private synchronized static List<Philosopher> getPreviewList() {
+        return previewList;
     }
 
     static List<Fork> getForks() {
         return forks;
+    }
+
+    static List<Philosopher> getPhilosophers() {
+        return philosophers;
     }
 }

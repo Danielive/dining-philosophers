@@ -1,3 +1,9 @@
+/*
+ * Developed by Daniel Chuev.
+ * Last modified 23.12.18 13:41.
+ * Copyright (c) 2018. All Right Reserved.
+ */
+
 group 'dining-philosophers'
 version '1.0-SNAPSHOT'
 
