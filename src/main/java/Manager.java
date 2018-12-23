@@ -37,15 +37,25 @@ final class Manager {
             BlockChain.clearBlockChain();
             philosophers.forEach(Philosopher::clear);
             forks.forEach(Fork::clear);
+            miners.forEach(Miner::clearMinerChain);
 
             while (!stateDined) {
                 previewList.clear();
 
-
-                philosophers
-                        .stream()
-                        .filter(this::choicePhilosopher)
-                        .forEach(this::writePreviewList);
+                for (Philosopher philosopher : philosophers)
+                    if (choicePhilosopher(philosopher))
+                        previewList.add(philosopher);
+//
+//                System.out.println("PREVIEW !!!!!!!!!!!!!!!! " + previewList.size());
+//
+//                for (Philosopher philosopher : philosophers) {
+//                    System.out.println("!!!!!!!!!!!!!!!!" +
+//                            "\nNAME " + philosopher.getName() +
+//                            "\nTAKE " + philosopher.getTake() +
+//                            "\nSTATE " + philosopher.getState() +
+//                            "\nDINED " + philosopher.getDined() +
+//                            "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//                }
 
                 miners.stream().parallel().forEach(this::creation);
 
@@ -69,10 +79,6 @@ final class Manager {
         }
 
         if (philosopher != null) miner.creation(philosopher);
-    }
-
-    private void writePreviewList(Philosopher philosopher) {
-        previewList.add(philosopher);
     }
 
     private void checkDined(final int count) {
@@ -115,8 +121,7 @@ final class Manager {
             Manager.getForks().get(two).setState(true);
             Manager.getPhilosophers().get(one).setState(false);
             Manager.getPhilosophers().get(two).setState(false);
-            Manager.getPhilosophers().get(two).setTake(false);
-            Manager.getPhilosophers().get(one).setDined(true);
+            Manager.getPhilosophers().get(one).setTake(false);
             return true;
         }
         return false;
@@ -133,7 +138,7 @@ final class Manager {
     }
 
     private void choiceRestorePhilosopher(Philosopher philosopher) {
-        if (!philosopher.getDined() && philosopher.getState()) {
+        if (philosopher.getState()) {
             if (philosopher.getNumber()+1 < Manager.getPhilosophers().size())
                 doRestore(philosopher.getNumber(), philosopher.getNumber()+1);
             else

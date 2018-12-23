@@ -28,15 +28,9 @@ final class Philosopher {
         System.out.println(getName() + " has sit at the table : " + formatDate.format(new Date()));
     }
 
-    void dining() {
-        if (getState() && getTake()) {
-            // dining & creation block
-
-        }
-    }
-
     void clear() {
         setState(false);
+        setDined(false);
         setTake(false);
     }
 
@@ -72,7 +66,7 @@ final class Philosopher {
     Boolean getDined() {
         return dined;
     }
-    public void setDined(Boolean dined) {
+    void setDined(Boolean dined) {
         this.dined = dined;
     }
 }

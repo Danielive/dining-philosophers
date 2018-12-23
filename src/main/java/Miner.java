@@ -82,4 +82,8 @@ class Miner {
         hashBlockChain = BlockChain.getHashBlockChain();
         System.out.println("Miner#" + numbMiner + " CLEAR MINER");
     }
+
+    void clearMinerChain() {
+        minerChain.clear();
+    }
 }
