@@ -1,6 +1,6 @@
 /*
  * Developed by Daniel Chuev.
- * Last modified 24.12.18 0:42.
+ * Last modified 24.12.18 1:38.
  * Copyright (c) 2018. All Right Reserved.
  */
 
@@ -60,12 +60,21 @@ final class Manager {
     }
 
     private void creation(Miner miner) {
-        Philosopher philosopher = null;
+        Philosopher philosopher;
 
         synchronized (this) {
             if (!Manager.getPreviewList().isEmpty()) {
                 philosopher = Manager.getPreviewList().get(0);
                 Manager.getPreviewList().remove(0);
+            }
+            else {
+                for (Philosopher phil : philosophers) {
+                    if (phil.getState() && phil.getTake())
+                        previewList.add(phil);
+                }
+                Collections.shuffle(previewList);
+                philosopher = previewList.get(0);
+                previewList.clear();
             }
         }
 

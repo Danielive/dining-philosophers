@@ -1,6 +1,6 @@
 /*
  * Developed by Daniel Chuev.
- * Last modified 24.12.18 0:30.
+ * Last modified 24.12.18 1:38.
  * Copyright (c) 2018. All Right Reserved.
  */
 
@@ -54,16 +54,16 @@ class Miner {
     private void addition(Philosopher philosopher) {
         if (minerChain.size() != 0 && (philosopher.getNumber() + 1) < Manager.getForks().size()) {
             System.out.println("Miner#" + numbMiner + " creating block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2) + "| : " + Philosopher.getFormatDate().format(new Date()));
-            addBlock(new Block(philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2), philosopher.getNumber(), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
+            addBlock(new Block("Miner#" + numbMiner, philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2), philosopher.getNumber(), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
         } else if ((philosopher.getNumber() + 1) < Manager.getForks().size()) {
             System.out.println("Miner#" + numbMiner + " creating block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2) + "| : " + Philosopher.getFormatDate().format(new Date()));
-            addBlock(new Block(philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2), philosopher.getNumber(), "0"));
+            addBlock(new Block("Miner#" + numbMiner, philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (philosopher.getNumber() + 2), philosopher.getNumber(), "0"));
         } else if (minerChain.size() != 0) {
             System.out.println("Miner#" + numbMiner + " creating block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1) + "| : " + Philosopher.getFormatDate().format(new Date()));
-            addBlock(new Block(philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1), philosopher.getNumber(), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
+            addBlock(new Block("Miner#" + numbMiner, philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1), philosopher.getNumber(), BlockChain.blockchain.get(BlockChain.blockchain.size() - 1).hash));
         } else {
             System.out.println("Miner#" + numbMiner + " creating block |" + philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1) + "| : " + Philosopher.getFormatDate().format(new Date()));
-            addBlock(new Block(philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1), philosopher.getNumber(), "0"));
+            addBlock(new Block("Miner#" + numbMiner, philosopher.getName() + " takes forks " + (philosopher.getNumber() + 1) + " and " + (1), philosopher.getNumber(), "0"));
         }
     }
 

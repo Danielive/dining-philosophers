@@ -1,6 +1,6 @@
 /*
  * Developed by Daniel Chuev.
- * Last modified 24.12.18 1:37.
+ * Last modified 24.12.18 1:38.
  * Copyright (c) 2018. All Right Reserved.
  */
 
@@ -12,12 +12,14 @@ class Block {
 
     String hash;
     private String previousHash;
+    private String miner;
     private String data;
     private Integer numbPhil;
     private String timeStamp;
     private int nonce;
 
-    Block(String data, Integer numbPhil, String previousHash) {
+    Block(String miner, String data, Integer numbPhil, String previousHash) {
+        this.miner = miner;
         this.data = data;
         this.numbPhil = numbPhil;
         this.previousHash = previousHash;
@@ -29,8 +31,10 @@ class Block {
     private String calculateHash() {
         return StringUtil.applySha256(
                 previousHash +
+                        numbPhil +
                         timeStamp +
                         Integer.toString(nonce) +
+                        miner +
                         data
         );
     }
@@ -50,6 +54,7 @@ class Block {
                 "\n|" + data + "|" +
                 "\nprevious hash : " + (!Objects.equals(previousHash, "0") ? previousHash.substring(55) : previousHash) +
                 "\ncurrent hash  : " + hash.substring(55) +
+                "\ncreated : " + miner +
                 "\n________________________________________________________");
     }
 
