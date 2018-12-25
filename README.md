@@ -4,7 +4,7 @@
 ### mutex: using synchronization primitive - mutex
 ### fun-p: using functional programming
 ### mst: through the minimum spanning tree (MST)
-### mster: through the BlockChain
+### master: through the BlockChain
 
 ## Solving the task of dining philosophers through the BlockChain
 - 3 miners, 5 philosophers
