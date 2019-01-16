@@ -1,10 +1,10 @@
 # Dining philosophers
 
-## Four forks implementation task of dining philosophers using different methods
-### mutex: using synchronization primitive - mutex
-### fun-p: using functional programming
-### mst: through the minimum spanning tree (MST)
-### master: through the BlockChain
+## Four branches implementation task of dining philosophers using different methods
+### mutex: `Synchronization primitive - mutex`
+### fun-p: `Functional programming`
+### mst: `Minimum Spanning Tree (MST)`
+### master: `BlockChain`
 
 ## Solving the task of dining philosophers through the BlockChain
 - 3 miners, 5 philosophers
